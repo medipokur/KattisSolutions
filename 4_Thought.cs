@@ -57,8 +57,63 @@ namespace ConsoleApp2
                 }
             }
         }
-
+        
         static int EvaluateExpression(string expression)
+        {
+            // 4+4/4*4
+
+            if ((expression[1] == '+' || expression[1] == '-') 
+                && (expression[3] == '*' || expression[3] == '/'))
+            {
+                int middle = Evaluate(expression.Substring(2, 3));
+
+                if (expression[5] == '*' || expression[5] == '/')
+                {
+                    int end = Evaluate(middle.ToString() + expression.Substring(5, 2));
+
+                    return Evaluate(expression.Substring(0, 2) + end.ToString());
+                }
+                else
+                {
+                    int start = Evaluate(expression.Substring(0, 2) + middle.ToString());
+
+                    return Evaluate(start.ToString() + expression.Substring(5, 2));
+                }
+            }
+            else
+            {
+
+            }            
+        }
+
+        static int Evaluate(string expr)
+        {
+            // 166*16
+            int index = expr.IndexOfAny(new char[] { '+', '-', '*', '\\' });
+
+            int leftSide = Convert.ToInt32(expr.Substring(0, index));
+
+            int rightSide = Convert.ToInt32(expr.Substring(index+1, expr.Length-index-1));
+
+            if (expr[index] == '+')
+            {
+                return leftSide + rightSide;
+            }
+            else if (expr[index] == '-')
+            {
+                return leftSide - rightSide;
+            }
+            else if (expr[index] == '*')
+            {
+                return leftSide * rightSide;
+            }
+            else
+            {
+                return leftSide / rightSide;
+            }
+        }
+        
+        static int EvaluateExpressionOld(string expression)
         {
             return Convert.ToInt32(dataTable.Compute(expression, null));
         }
