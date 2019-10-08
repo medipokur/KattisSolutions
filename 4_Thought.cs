@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
+//using System.Data;
 
-namespace ConsoleApp2
+namespace Aah
 {
     class Program
     {
-        static readonly DataTable dataTable = new DataTable();
+        //static readonly DataTable dataTable = new DataTable();
 
         static void Main(string[] args)
         {
@@ -21,7 +21,7 @@ namespace ConsoleApp2
                     for (int k = 0; k < 4; ++k)
                     {
                         expressions.Add("4" + operators[i] + "4" + operators[j] + "4" + operators[k] + "4");
-                    } 
+                    }
                 }
             }
 
@@ -40,7 +40,7 @@ namespace ConsoleApp2
 
             List<int> testCases = new List<int>();
 
-            for (int i= 0; i < numCases; ++i)
+            for (int i = 0; i < numCases; ++i)
             {
                 testCases.Add(Convert.ToInt32(Console.ReadLine()));
             }
@@ -49,7 +49,17 @@ namespace ConsoleApp2
             {
                 if (expressionResults.ContainsKey(testCase))
                 {
-                    Console.WriteLine(expressionResults[testCase]);
+                    string expression = expressionResults[testCase];
+                    string spacedExpression = "";
+
+                    foreach (char c in expression)
+                    {
+                        spacedExpression += c + " ";
+                    }
+
+                    spacedExpression = spacedExpression + "= " + testCase.ToString();
+
+                    Console.WriteLine(spacedExpression);
                 }
                 else
                 {
@@ -57,43 +67,77 @@ namespace ConsoleApp2
                 }
             }
         }
-        
+
         static int EvaluateExpression(string expression)
         {
-            // 4+4/4*4
-
-            if ((expression[1] == '+' || expression[1] == '-') 
+            if ((expression[1] == '+' || expression[1] == '-')
                 && (expression[3] == '*' || expression[3] == '/'))
             {
                 int middle = Evaluate(expression.Substring(2, 3));
 
                 if (expression[5] == '*' || expression[5] == '/')
                 {
+                    // 4+4/4*4
+
                     int end = Evaluate(middle.ToString() + expression.Substring(5, 2));
 
                     return Evaluate(expression.Substring(0, 2) + end.ToString());
                 }
                 else
                 {
+                    // 4+4/4-4
+
                     int start = Evaluate(expression.Substring(0, 2) + middle.ToString());
 
                     return Evaluate(start.ToString() + expression.Substring(5, 2));
                 }
             }
+            else if ((expression[1] == '+' || expression[1] == '-')
+                && (expression[5] == '*' || expression[5] == '/'))
+            {
+                // 4+4+4*4
+                int end = Evaluate(expression.Substring(4, 3));
+                int start = Evaluate(expression.Substring(0, 3));
+
+                return Evaluate(start.ToString() + expression[3] + end.ToString());
+            }
+            else if ((expression[1] == '*' || expression[1] == '/')
+                && (expression[3] == '+' || expression[3] == '-')
+                && (expression[5] == '*' || expression[5] == '/'))
+            {
+                // 4 * 4 + 4 / 4
+                int start = Evaluate(expression.Substring(0, 3));
+                int end = Evaluate(expression.Substring(4, 3));
+
+                return Evaluate(start.ToString() + expression[3] + end.ToString());
+            }
             else
             {
+                // 4 + 4 + 4 + 4
+                // 4 * 4 * 4 - 4
+                int start = Evaluate(expression.Substring(0, 3));
+                int middle = Evaluate(start.ToString() + expression.Substring(3, 2));
 
-            }            
+                return Evaluate(middle.ToString() + expression.Substring(5, 2));
+            }
         }
 
         static int Evaluate(string expr)
         {
+            int factor = 1;
+
+            if (expr[0] == '-')
+            {
+                factor = -1;
+                expr = expr.Substring(1);
+            }
+
             // 166*16
-            int index = expr.IndexOfAny(new char[] { '+', '-', '*', '\\' });
+            int index = expr.IndexOfAny(new char[] { '+', '-', '*', '/' });
 
-            int leftSide = Convert.ToInt32(expr.Substring(0, index));
+            int leftSide = factor * Convert.ToInt32(expr.Substring(0, index));
 
-            int rightSide = Convert.ToInt32(expr.Substring(index+1, expr.Length-index-1));
+            int rightSide = Convert.ToInt32(expr.Substring(index + 1, expr.Length - index - 1));
 
             if (expr[index] == '+')
             {
@@ -112,10 +156,11 @@ namespace ConsoleApp2
                 return leftSide / rightSide;
             }
         }
-        
+
         static int EvaluateExpressionOld(string expression)
         {
-            return Convert.ToInt32(dataTable.Compute(expression, null));
+            //return Convert.ToInt32(dataTable.Compute(expression, null));
+            return 0;
         }
     }
 }
