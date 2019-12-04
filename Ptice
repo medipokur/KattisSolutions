@@ -1,0 +1,52 @@
+using System;
+using System.Linq;
+using System.Collections.Generic;
+
+namespace Ptice{
+    public class Ptice{
+        public static void Main(){
+            int count = Convert.ToInt32(Console.ReadLine());
+            string input = Console.ReadLine();
+            
+            int adrianRepeat = count / 3;
+            int adrianRemain = count % 3;
+            string adrianAnswer = string.Concat(Enumerable.Repeat("ABC", adrianRepeat)) + "ABC".Substring(0, adrianRemain);
+            
+            int brunoRepeat = count / 4;
+            int brunoRemain = count % 4;
+            string brunoAnswer = string.Concat(Enumerable.Repeat("BABC", brunoRepeat)) + "BABC".Substring(0, brunoRemain);
+            
+            int goranRepeat = count / 6;
+            int goranRemain = count % 6;
+            string goranAnswer = string.Concat(Enumerable.Repeat("CCAABB", goranRepeat)) + "CCAABB".Substring(0, goranRemain);
+            
+            int adrianPoint = 0;
+            int brunoPoint = 0;
+            int goranPoint = 0;
+            
+            for (int i=0; i < count; ++i){
+                if (input[i] == adrianAnswer[i]){
+                    ++adrianPoint;
+                }
+                if (input[i] == brunoAnswer[i]){
+                    ++brunoPoint;
+                }
+                if (input[i] == goranAnswer[i]){
+                    ++goranPoint;
+                }
+            }
+            
+            Dictionary<string, int> dict = new Dictionary<string, int>();
+            
+            dict.Add("Adrian", adrianPoint);
+            dict.Add("Bruno", brunoPoint);
+            dict.Add("Goran", goranPoint);
+            
+            int max = Math.Max(adrianPoint, Math.Max(brunoPoint, goranPoint));
+            Console.WriteLine(max);
+            foreach(KeyValuePair<string, int> kvp in dict.Where(p => p.Value == max).OrderBy(x => x.Key)){
+                Console.WriteLine(kvp.Key);
+            }
+        }
+    }
+}
