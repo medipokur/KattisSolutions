@@ -14,9 +14,8 @@ namespace OddMan{
                 List<string> liste = inputs.ToList();
 
                 var q = from x in liste
-                group x by x into g
-                let count = g.Count()
-                orderby count ascending
+                group x by x into g                
+                where g.Count() == 1                
                 select g.Key;
 
                 results[i] = string.Format("Case #{0}: {1}", i+1, q.First());
